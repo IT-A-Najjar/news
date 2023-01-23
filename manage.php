@@ -20,31 +20,31 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_news\form\add;
-use local_news\manager;
 require_once(__DIR__ . '/../../config.php');
-require_login();
 
-$PAGE->set_url(new moodle_url('/local/news/add.php'));
+global $DB;
+
+//require_login();
+//$context = context_system::instance();
+//require_capability('local/news:managenews', $context);
+
+$PAGE->set_url(new moodle_url('/local/news/manage.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Add new News');
+$PAGE->set_title('News');
+$PAGE->set_heading('Manage News');
+$PAGE->requires->js_call_amd('local_message/confirm');
 $PAGE->requires->css('/local/news/styles.css');
 
-$mform=new add();
-if($mform->is_cancelled()){
-    redirect($CFG->wwwroot.'/local/news/manage.php',get_string('cancelled_form','local_news'));
+$news=$DB->get_records('local_news',null,'id');
 
-}elseif ($fromform= $mform->get_data()){
-    $manager = new manager();
-
-
-    $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype/*,$fromform->newsphoto*/);
-
-        //go back to manage.php
-    redirect($CFG->wwwroot.'/local/news/manage.php',get_string('created_form','local_news').$fromform->newstitle);
-}
 
 echo $OUTPUT->header();
-echo '<h1 class="aa">ADD NEW NEWS</h1>';
-$mform->display();
+$templatecontext = (object)[
+    'news' => array_values($news),
+    'editurl' => new moodle_url('/local/news/add.php'),
+//    'bulkediturl' => new moodle_url('/local/message/bulkedit.php'),
+];
+
+echo $OUTPUT->render_from_template('local_news/manage', $templatecontext);
+
 echo $OUTPUT->footer();

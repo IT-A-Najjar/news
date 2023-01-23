@@ -13,16 +13,20 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
-/**
- * @package     local_news
- * @author      Kristian
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @var stdClass $plugin
- */
-
 defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'local_news';
-$plugin->version = 2023011803;
-$plugin->requires = 2016052300; // Moodle version<?php
+/**
+ * Insert a link to index.php on the site front page navigation menu.
+ *
+ * @param navigation_node $frontpage Node representing the front page in the navigation tree.
+ */
+function local_news_extend_navigation_frontpage(navigation_node $frontpage)
+{
+    $frontpage->add(
+        get_string('pluginname', 'local_news'),
+        new moodle_url('/local/news/add.php'),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        null,
+        new pix_icon('t/message', '')
+    );
+}

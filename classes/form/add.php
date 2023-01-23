@@ -35,10 +35,10 @@ class add extends moodleform {
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
-        $mform->addElement('text', 'newstext', '<h3>News Title</h3>'); // Add elements to your form
-        $mform->setType('newstext', PARAM_NOTAGS);  //Set type of element
-        $mform->addRule('newstext', 'Mandatory', 'required', null, 'client');
-        $mform->setDefault('newstext', "Enter the Title");        //Default value
+        $mform->addElement('text', 'newstitle', '<h3>News Title</h3>'); // Add elements to your form
+        $mform->setType('newstitle', PARAM_NOTAGS);  //Set type of element
+        $mform->addRule('newstitle', 'Mandatory', 'required', null, 'client');
+        $mform->setDefault('newstitle', "Enter the Title");        //Default value
 
         $choices = array();
         $choices['0'] = \core\output\notification::NOTIFY_WARNING;
@@ -50,16 +50,16 @@ class add extends moodleform {
         $mform->setDefault('newstype', '3');
 
 
-        $mform->addElement('textarea', 'introexp', '<h3>Content</h3>', 'wrap="virtual" rows="5" cols="5"', array('maxlength' => '700'));
-        $mform->setType('introexp', PARAM_RAW);
-        $mform->addRule('introexp', get_string('required', 'local_news'), 'required', null, 'client');
-//       $mform->addHelpButton('introexp', 'introexp', 'local_news');
-        $mform->setDefault('introexp', "Enter the News");
+        $mform->addElement('textarea', 'newstext', '<h3>Content</h3>', 'wrap="virtual" rows="5" cols="5"', array('maxlength' => '700'));
+        $mform->setType('newstext', PARAM_RAW);
+        $mform->addRule('newstext', get_string('required', 'local_news'), 'required', null, 'client');
+//       $mform->addHelpButton('newstext', 'introexp', 'local_news');
+        $mform->setDefault('newstext', "Enter the News");
 
 //        $userpicoptions = array('subdirs' => 0, 'maxbytes' => '', 'context' => $context,
 //            'accepted_types' => array('.png', '.jpeg'), 'return_types' => FILE_INTERNAL | FILE_EXTERNAL);
-        $mform->addElement('filemanager', 'newspic', '<h3>News Image</h3>', null, $userpicoptions);
-        $mform->addRule('newspic', get_string('required', 'local_slack'), 'required', null, 'client');
+//        $mform->addElement('filemanager', 'newspic', '<h3>News Image</h3>', null, $userpicoptions);
+//        $mform->addRule('newsphoto', get_string('required', 'local_slack'), 'required', null, 'client');
 //        $mform->setType('userpic', PARAM_RAW);
 //        $mform->addHelpButton('userpic', 'userpic', 'local_slack');
 

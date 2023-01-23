@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Broadcast messages';
+$string['pluginname'] = 'Add News';
 $string['enter_news'] = 'Please enter a title new news';
 $string['manage'] = 'Manage broadcast messages';
 $string['setting_enable'] = 'Enable';

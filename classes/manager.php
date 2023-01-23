@@ -33,14 +33,16 @@ class manager {
      * @param string $message_type
      * @return bool true if successful
      */
-    public function create_news(string $message_text, string $message_type): bool
+    public function create_news(string $news_title, string $news_text, string $news_type /*,string $news_photo*/): bool
     {
         global $DB;
         $record_to_insert = new stdClass();
-        $record_to_insert->messagetest = $message_text;
-        $record_to_insert->messagetype = $message_type;
+        $record_to_insert->newstitle = $news_title;
+        $record_to_insert->newstext = $news_text;
+        $record_to_insert->newstype = $news_type;
+        $record_to_insert->newsphoto = $news_photo;
         try {
-            return $DB->insert_record('local_message', $record_to_insert, false);
+            return $DB->insert_record('local_news', $record_to_insert, false);
         } catch (dml_exception $e) {
             return false;
         }
