@@ -20,47 +20,47 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use local_news\form\add;
+
+use local_news\form\addcategory;
 use local_news\manager;
+
 require_once(__DIR__ . '/../../config.php');
 require_login();
 
-$PAGE->set_url(new moodle_url('/local/news/add.php'));
+$PAGE->set_url(new moodle_url('/local/news/addcategory.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Add new News');
-$PAGE->requires->css('/local/news/styles.css');
-$newsid=optional_param('newsid',null,PARAM_INT);
+$PAGE->set_title('Add new Category');
 
-$mform=new add();
+$categoryid=optional_param('categoryid',null,PARAM_INT);
+$mform = new addcategory();
 if($mform->is_cancelled()){
-    redirect($CFG->wwwroot.'/local/news/manage.php',get_string('cancelled_form','local_news'));
+    redirect($CFG->wwwroot.'/local/news/managecategory.php',get_string('cancelled_form','local_news'));
 
 }elseif ($fromform= $mform->get_data()){
     $manager = new manager();
 
     if ($fromform->id) {
         // We are updating an existing message.
-        $manager->update_news($fromform->id, $fromform->newstitle, $fromform->newstext,$fromform->newstype);
-        redirect($CFG->wwwroot . '/local/news/manage.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
+        $manager->update_category($fromform->id,$fromform->categoryname,$fromform->categoryparent);
+        redirect($CFG->wwwroot . '/local/news/managecategory.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
     }
 
-    $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype/*,$fromform->newsphoto*/);
+    $manager->create_category($fromform->categoryname,$fromform->categoryparent);
 
-        //go back to manage.php
-    redirect($CFG->wwwroot.'/local/news/manage.php','You created a news with title '.$fromform->newstitle);
+    //go back to manage.php
+    redirect($CFG->wwwroot.'/local/news/managecategory.php','You created a new category  '.$fromform->categoryname);
 }
-
-if($newsid){
+if($categoryid){
     global $DB;
     $manager=new manager();
-    $news = $manager->get_news($newsid);
-    if (!$news) {
+    $category = $manager->get_category($categoryid);
+    if (!$category) {
         throw new invalid_parameter_exception('news not found');
     }
-    $mform->set_data($news);
+    $mform->set_data($category);
 }
 
 echo $OUTPUT->header();
-echo '<h1 class="aa">ADD NEW NEWS</h1>';
+echo '<h1 class="aa">ADD NEW SCATEGORY</h1>';
 $mform->display();
 echo $OUTPUT->footer();

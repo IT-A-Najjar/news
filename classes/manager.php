@@ -39,8 +39,8 @@ class manager {
         $record_to_insert = new stdClass();
         $record_to_insert->newstitle = $news_title;
         $record_to_insert->newstext = $news_text;
-        $record_to_insert->newstype = $news_type;
-        $record_to_insert->newsphoto = $news_photo;
+        $record_to_insert->categoryid = $news_type;
+//        $record_to_insert->newsphoto = $news_photo;
         try {
             return $DB->insert_record('local_news', $record_to_insert, false);
         } catch (dml_exception $e) {
@@ -48,17 +48,37 @@ class manager {
         }
     }
 
-//    /** Gets all messages that have not been read by this user
-//     * @param int $userid the user that we are getting messages for
-//     * @return array of messages
-//     */
-//    public function get_messages(int $userid): array
+    /** Insert the data into our database table.
+     * @param string $category_name
+     * @param string $category_parent
+     * @return bool true if successful
+     */
+    public function create_category(string $category_name, string $category_parent): bool
+    {
+        global $DB;
+        $record_to_insert = new stdClass();
+        $record_to_insert->categoryname = $category_name;
+        $record_to_insert->categoryparent = $category_parent;
+        try {
+            return $DB->insert_record('local_news_category', $record_to_insert, false);
+        } catch (dml_exception $e) {
+            return false;
+        }
+    }
+
+    /** Gets all messages that have not been read by this user
+     * @param int $userid the user that we are getting messages for
+     * @return array of messages
+     */
+//    public function get_news(int $userid): array
 //    {
 //        global $DB;
 ////        $sql = "SELECT lm.id, lm.messagetest, lm.messagetype
 ////            FROM {local_message} lm
 ////            LEFT OUTER JOIN {local_message_read} lmr ON lm.id = lmr.messageid AND lmr.userid = :userid
 ////            WHERE lmr.userid IS NULL";
+//        $sql="SELECT newstitle, newstext FROM local_news
+//                WHERE id=:userid";
 //        $params = [
 //            'userid' => $userid,
 //        ];
@@ -70,13 +90,13 @@ class manager {
 //        }
 //    }
 //
-//    /** Gets all messages
-//     * @return array of messages
-//     */
-//    public function get_all_messages(): array {
-//        global $DB;
-//        return $DB->get_records('local_message');
-//    }
+    /** Gets all messages
+     * @return array of messages
+     */
+    public function get_all_categorys(): array {
+        global $DB;
+        return $DB->get_records('local_news_category');
+    }
 //
 //    /** Mark that a message was read by this user.
 //     * @param int $message_id the message to mark as read
@@ -97,32 +117,57 @@ class manager {
 //        }
 //    }
 //
-//    /** Get a single message from its id.
-//     * @param int $messageid the message we're trying to get.
-//     * @return object|false message data or false if not found.
-//     */
-//    public function get_message(int $messageid)
-//    {
-//        global $DB;
-//        return $DB->get_record('local_message', ['id' => $messageid]);
-//    }
+    /** Get a single message from its id.
+     * @param int $newsid the message we're trying to get.
+     * @return object|false message data or false if not found.
+     */
+    public function get_news(int $newsid)
+    {
+        global $DB;
+        return $DB->get_record('local_news', ['id' => $newsid]);
+    }
+    /** Get a single message from its id.
+     * @param int $newsid the message we're trying to get.
+     * @return object|false message data or false if not found.
+     */
+    public function get_category(int $id)
+    {
+        global $DB;
+        return $DB->get_record('local_news_category', ['id' => $id]);
+    }
 //
-//    /** Update details for a single message.
-//     * @param int $messageid the message we're trying to get.
-//     * @param string $message_text the new text for the message.
-//     * @param string $message_type the new type for the message.
-//     * @return bool message data or false if not found.
-//     */
-//    public function update_message(int $messageid, string $message_text, string $message_type): bool
-//    {
-//        global $DB;
-//        $object = new stdClass();
-//        $object->id = $messageid;
-//        $object->messagetest = $message_text;
-//        $object->messagetype = $message_type;
-//        return $DB->update_record('local_message', $object);
-//    }
+    /** Update details for a single message.
+     * @param int $messageid the message we're trying to get.
+     * @param string $message_text the new text for the message.
+     * @param string $message_type the new type for the message.
+     * @return bool message data or false if not found.
+     */
+    public function update_news(int $newsid, string $news_title, string $news_text, string $news_type): bool
+    {
+        global $DB;
+        $object = new stdClass();
+        $object->id = $newsid;
+        $object->newstitle = $news_title;
+        $object->newstext = $news_text;
+        $object->categoryid = $news_type;
+        return $DB->update_record('local_news', $object);
+    }
 //
+    /** Update details for a single message.
+     * @param int $messageid the message we're trying to get.
+     * @param string $message_text the new text for the message.
+     * @param string $message_type the new type for the message.
+     * @return bool message data or false if not found.
+     */
+    public function update_category(int $categoryid, string $category_name, string $category_parent): bool
+    {
+        global $DB;
+        $object = new stdClass();
+        $object->id = $categoryid;
+        $object->categoryname = $category_name;
+        $object->categoryparent = $category_parent;
+        return $DB->update_record('local_news_category', $object);
+    }
 //    /** Update the type for an array of messages.
 //     * @return bool message data or false if not found.
 //     */
@@ -133,38 +178,41 @@ class manager {
 //        return $DB->set_field_select('local_message', 'messagetype', $type, "id $ids", $params);
 //    }
 //
-//    /** Delete a message and all the read history.
-//     * @param $messageid
-//     * @return bool
-//     * @throws \dml_transaction_exception
-//     * @throws dml_exception
-//     */
-//    public function delete_message($messageid)
-//    {
-//        global $DB;
-//        $transaction = $DB->start_delegated_transaction();
-//        $deletedMessage = $DB->delete_records('local_message', ['id' => $messageid]);
-//        $deletedRead = $DB->delete_records('local_message_read', ['messageid' => $messageid]);
+    /** Delete a message and all the read history.
+     * @param $newsid
+     * @return bool
+     * @throws \dml_transaction_exception
+     * @throws dml_exception
+     */
+    public function delete_news($newsid)
+    {
+        global $DB;
+        $transaction = $DB->start_delegated_transaction();
+        $deletedNews = $DB->delete_records('local_message', ['id' => $newsid]);
+//        $deletedRead = $DB->delete_records('local_message_read', ['newsid' => $newsid]);
 //        if ($deletedMessage && $deletedRead) {
 //            $DB->commit_delegated_transaction($transaction);
 //        }
-//        return true;
-//    }
+        if ($deletedNews) {
+            $DB->commit_delegated_transaction($transaction);
+        }
+        return true;
+    }
 //
-//    /** Delete all messages by id.
-//     * @param $messageids
-//     * @return bool
-//     */
-//    public function delete_messages($messageids)
-//    {
-//        global $DB;
-//        $transaction = $DB->start_delegated_transaction();
-//        list($ids, $params) = $DB->get_in_or_equal($messageids);
-//        $deletedMessages = $DB->delete_records_select('local_message', "id $ids", $params);
-//        $deletedReads = $DB->delete_records_select('local_message_read', "messageid $ids", $params);
-//        if ($deletedMessages && $deletedReads) {
-//            $DB->commit_delegated_transaction($transaction);
-//        }
-//        return true;
-//    }
+    /** Delete all messages by id.
+     * @param $messageids
+     * @return bool
+     */
+    public function delete_newss($newsids)
+    {
+        global $DB;
+        $transaction = $DB->start_delegated_transaction();
+        list($ids, $params) = $DB->get_in_or_equal($newsids);
+        $deletedNews = $DB->delete_records_select('local_news', "id $ids", $params);
+        $deletedReads = $DB->delete_records_select('local_news_read', "newsid $ids", $params);
+        if ($deletedNews && $deletedReads) {
+            $DB->commit_delegated_transaction($transaction);
+        }
+        return true;
+    }
 }

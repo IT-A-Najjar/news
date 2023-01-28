@@ -24,27 +24,21 @@ require_once(__DIR__ . '/../../config.php');
 
 global $DB;
 
-//require_login();
-//$context = context_system::instance();
-//require_capability('local/news:managenews', $context);
-
-$PAGE->set_url(new moodle_url('/local/news/manage.php'));
+$PAGE->set_url(new moodle_url('/local/news/managecategory.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('News');
-$PAGE->set_heading('Manage News');
+$PAGE->set_title('Category');
+$PAGE->set_heading('Manage Category');
 $PAGE->requires->js_call_amd('local_message/confirm');
 $PAGE->requires->css('/local/news/styles.css');
 
-$news=$DB->get_records('local_news',null,'id');
-
+$category=$DB->get_records('local_news_category',null,'id');
 
 echo $OUTPUT->header();
 $templatecontext = (object)[
-    'news' => array_values($news),
-    'editurl' => new moodle_url('/local/news/add.php'),
-//    'bulkediturl' => new moodle_url('/local/message/bulkedit.php'),
+    'category' => array_values($category),
+    'editurl' => new moodle_url('/local/news/addcategory.php'),
 ];
 
-echo $OUTPUT->render_from_template('local_news/manage', $templatecontext);
+echo $OUTPUT->render_from_template('local_news/managecategory', $templatecontext);
 
 echo $OUTPUT->footer();
