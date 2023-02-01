@@ -44,14 +44,14 @@ class addcategory extends moodleform
         $mform->setDefault('categoryname', "Enter the Category Name");        //Default value
 
 
-        $choices = array();
-        $choices['0'] = "عاجل";
-        $choices['1'] = "هام";
-        $choices['2'] = "متوسط";
-        $choices['3'] = "غير مهم";
-        $mform->addElement('select', 'categoryparent','<h3>Category Parent</h3>',$choices );
-        $mform->addRule('categoryparent', 'Mandatory', 'required', null, 'client');
-        $mform->setDefault('categoryparent', '3');
+//        $choices = array();
+//        $choices['0'] = "عاجل";
+//        $choices['1'] = "هام";
+//        $choices['2'] = "متوسط";
+//        $choices['3'] = "غير مهم";
+//        $mform->addElement('select', 'categoryparent','<h3>Category Parent</h3>',$choices );
+//        $mform->addRule('categoryparent', 'Mandatory', 'required', null, 'client');
+//        $mform->setDefault('categoryparent', '3');
 
         $this->add_action_buttons();
     }

@@ -24,6 +24,7 @@
 namespace local_news;
 
 use dml_exception;
+use local_news\form\add;
 use stdClass;
 
 class manager {
@@ -33,13 +34,24 @@ class manager {
      * @param string $message_type
      * @return bool true if successful
      */
-    public function create_news(string $news_title, string $news_text, string $news_type /*,string $news_photo*/): bool
+    public function create_news(string $news_title, string $news_text, string $news_type ,string $news_photo): bool
     {
+        $newsform = new add();
+
+        $file = $newsform->get_new_filename('image');
+        $fullpath = "upload/". time().$news_photo;
+        $success = $newsform->save_file('image', $fullpath,true);
+        if(!$success){
+            echo "Oops! something went wrong!";
+        }
+
         global $DB;
         $record_to_insert = new stdClass();
         $record_to_insert->newstitle = $news_title;
         $record_to_insert->newstext = $news_text;
         $record_to_insert->categoryid = $news_type;
+        $record_to_insert->image = $fullpath;
+        $record_to_insert->timecreated = time();
 //        $record_to_insert->newsphoto = $news_photo;
         try {
             return $DB->insert_record('local_news', $record_to_insert, false);
@@ -53,14 +65,15 @@ class manager {
      * @param string $category_parent
      * @return bool true if successful
      */
-    public function create_category(string $category_name, string $category_parent): bool
+    public function create_category(string $category_name): bool
     {
         global $DB;
         $record_to_insert = new stdClass();
         $record_to_insert->categoryname = $category_name;
-        $record_to_insert->categoryparent = $category_parent;
+        $record_to_insert->timecreated = time();
+//        $record_to_insert->categoryparent = $category_parent;
         try {
-            return $DB->insert_record('local_news_category', $record_to_insert, false);
+            return $DB->insert_record('local_news_categories', $record_to_insert, false);
         } catch (dml_exception $e) {
             return false;
         }
@@ -95,7 +108,7 @@ class manager {
      */
     public function get_all_categorys(): array {
         global $DB;
-        return $DB->get_records('local_news_category');
+        return $DB->get_records('local_news_categories');
     }
 //
 //    /** Mark that a message was read by this user.

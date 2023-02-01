@@ -45,7 +45,7 @@ if($mform->is_cancelled()){
         redirect($CFG->wwwroot . '/local/news/managecategory.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
     }
 
-    $manager->create_category($fromform->categoryname,$fromform->categoryparent);
+    $manager->create_category($fromform->categoryname);
 
     //go back to manage.php
     redirect($CFG->wwwroot.'/local/news/managecategory.php','You created a new category  '.$fromform->categoryname);

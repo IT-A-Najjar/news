@@ -44,7 +44,7 @@ if($mform->is_cancelled()){
         redirect($CFG->wwwroot . '/local/news/manage.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
     }
 
-    $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype/*,$fromform->newsphoto*/);
+    $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype,$fromform->image);
 
         //go back to manage.php
     redirect($CFG->wwwroot.'/local/news/manage.php','You created a news with title '.$fromform->newstitle);

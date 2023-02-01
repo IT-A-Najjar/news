@@ -23,6 +23,7 @@
 
 namespace local_news\form;
 use core_files\reportbuilder\local\entities\file;
+use local_news\manager;
 use moodleform;
 
 require_once("$CFG->libdir/formslib.php");
@@ -31,6 +32,7 @@ class add extends moodleform {
     //Add elements to form
     public function definition() {
         global $CFG;
+        global $DB;
         $mform = $this->_form; // Don't forget the underscore!
 
         $mform->addElement('hidden', 'id');
@@ -39,13 +41,15 @@ class add extends moodleform {
         $mform->setType('newstitle', PARAM_NOTAGS);  //Set type of element
         $mform->addRule('newstitle', 'Mandatory', 'required', null, 'client');
         $mform->setDefault('newstitle', "Enter the Title");        //Default value
+//        $manger=new manager();
+        $records=$DB->get_records('local_news_categories');
 
-        $choices = array();
-        $choices['0'] = \core\output\notification::NOTIFY_WARNING;
-        $choices['1'] = \core\output\notification::NOTIFY_SUCCESS;
-        $choices['2'] = \core\output\notification::NOTIFY_ERROR;
-        $choices['3'] = \core\output\notification::NOTIFY_INFO;
-        $mform->addElement('select', 'newstype','<h3>News Classification</h3>', $choices);
+        $categories=array();
+        foreach($records as $record)
+        {
+            $categories[$record->id]=$record->categoryname;
+        }
+        $mform->addElement('select', 'newstype','<h3>News Classification</h3>',$categories);
         $mform->addRule('newstype', 'Mandatory', 'required', null, 'client');
         $mform->setDefault('newstype', '3');
 
@@ -56,13 +60,12 @@ class add extends moodleform {
 //       $mform->addHelpButton('newstext', 'introexp', 'local_news');
         $mform->setDefault('newstext', "Enter the News");
 
-//        $userpicoptions = array('subdirs' => 0, 'maxbytes' => '', 'context' => $context,
-//            'accepted_types' => array('.png', '.jpeg'), 'return_types' => FILE_INTERNAL | FILE_EXTERNAL);
-//        $mform->addElement('filemanager', 'newspic', '<h3>News Image</h3>', null, $userpicoptions);
-//        $mform->addRule('newsphoto', get_string('required', 'local_slack'), 'required', null, 'client');
-//        $mform->setType('userpic', PARAM_RAW);
-//        $mform->addHelpButton('userpic', 'userpic', 'local_slack');
-
+        $userpicoptions = array('subdirs' => 0, 'maxbytes' => '', 'context' => $context,
+            'accepted_types' => array('.png', '.jpeg'));
+        $mform->addElement('filemanager', 'image', '<h3>News Image</h3>', null /*,$userpicoptions*/);
+        $mform->addRule('image', get_string('required', 'local_slack'), 'required', null, 'client');
+        $mform->setType('image', PARAM_RAW);
+        $mform->addHelpButton('image', 'image', 'local_news');
 
         $this->add_action_buttons();
     }

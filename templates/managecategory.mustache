@@ -30,7 +30,7 @@
         <tr>
             <th scope="col">num</th>
             <th scope="col">name</th>
-            <th scope="col">parent</th>
+<!--            <th scope="col">parent</th>-->
         </tr>
         </thead>
         <tbody>
@@ -38,7 +38,7 @@
             <tr>
                 <th scope="row">{{id}}</th>
                 <td>{{categoryname}}</td>
-                <td>{{categoryparent}}</td>
+<!--                <td>{{categoryparent}}</td>-->
                 <td>
                     <input type="button" class="btn btn-primary" value="Edit category" onclick="location.href='{{editurl}}?categoryid={{id}}'">
                     <input type="button" class="local_messageid{{id}} btn btn-danger local_message_delete_button" value="Delete category">
@@ -49,3 +49,5 @@
     </table>
 
 </div>
+<input type="button" class="btn btn-primary" value="Create category" onclick="location.href='{{editurl}}'">
+<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">

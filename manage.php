@@ -42,6 +42,7 @@ echo $OUTPUT->header();
 $templatecontext = (object)[
     'news' => array_values($news),
     'editurl' => new moodle_url('/local/news/add.php'),
+    'curl' => new moodle_url('/local/news/addcategory.php'),
 //    'bulkediturl' => new moodle_url('/local/message/bulkedit.php'),
 ];
 

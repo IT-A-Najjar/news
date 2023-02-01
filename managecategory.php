@@ -31,7 +31,7 @@ $PAGE->set_heading('Manage Category');
 $PAGE->requires->js_call_amd('local_message/confirm');
 $PAGE->requires->css('/local/news/styles.css');
 
-$category=$DB->get_records('local_news_category',null,'id');
+$category=$DB->get_records('local_news_categories',null,'id');
 
 echo $OUTPUT->header();
 $templatecontext = (object)[
