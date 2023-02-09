@@ -41,9 +41,8 @@ class add extends moodleform {
         $mform->setType('newstitle', PARAM_NOTAGS);  //Set type of element
         $mform->addRule('newstitle', 'Mandatory', 'required', null, 'client');
         $mform->setDefault('newstitle', "Enter the Title");        //Default value
-//        $manger=new manager();
-        $records=$DB->get_records('local_news_categories');
 
+        $records=$DB->get_records('local_news_categories');
         $categories=array();
         foreach($records as $record)
         {

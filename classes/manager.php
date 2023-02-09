@@ -34,13 +34,13 @@ class manager {
      * @param string $message_type
      * @return bool true if successful
      */
-    public function create_news(string $news_title, string $news_text, string $news_type ,string $news_photo): bool
+    public function create_news(string $news_title, string $news_text, string $news_type ,string $file): bool
     {
-        $newsform = new add();
-
-        $file = $newsform->get_new_filename('image');
-        $fullpath = "upload/". time().$news_photo;
-        $success = $newsform->save_file('image', $fullpath,true);
+        $mform = new add();
+//
+//        $file = $newsform->get_new_filename('image');
+        $fullpath = "upload/". time().$file;
+        $success = $mform->save_file('image', $fullpath,true);
         if(!$success){
             echo "Oops! something went wrong!";
         }
@@ -146,7 +146,7 @@ class manager {
     public function get_category(int $id)
     {
         global $DB;
-        return $DB->get_record('local_news_category', ['id' => $id]);
+        return $DB->get_record('local_news_categories', ['id' => $id]);
     }
 //
     /** Update details for a single message.
@@ -172,14 +172,14 @@ class manager {
      * @param string $message_type the new type for the message.
      * @return bool message data or false if not found.
      */
-    public function update_category(int $categoryid, string $category_name, string $category_parent): bool
+    public function update_category(int $categoryid, string $categoryname): bool
     {
         global $DB;
         $object = new stdClass();
         $object->id = $categoryid;
-        $object->categoryname = $category_name;
-        $object->categoryparent = $category_parent;
-        return $DB->update_record('local_news_category', $object);
+        $object->categoryname = $categoryname;
+        $object->timecreated = time();
+        return $DB->update_record('local_news_categories', $object);
     }
 //    /** Update the type for an array of messages.
 //     * @return bool message data or false if not found.

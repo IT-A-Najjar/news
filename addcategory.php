@@ -41,7 +41,7 @@ if($mform->is_cancelled()){
 
     if ($fromform->id) {
         // We are updating an existing message.
-        $manager->update_category($fromform->id,$fromform->categoryname,$fromform->categoryparent);
+        $manager->update_category($fromform->id,$fromform->categoryname);
         redirect($CFG->wwwroot . '/local/news/managecategory.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
     }
 

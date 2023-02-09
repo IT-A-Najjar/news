@@ -32,7 +32,7 @@ $PAGE->set_url(new moodle_url('/local/news/manage.php'));
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_title('News');
 $PAGE->set_heading('Manage News');
-$PAGE->requires->js_call_amd('local_message/confirm');
+$PAGE->requires->js_call_amd('local_news/confirm');
 $PAGE->requires->css('/local/news/styles.css');
 
 $news=$DB->get_records('local_news',null,'id');
