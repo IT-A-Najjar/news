@@ -20,6 +20,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_news\manager;
+
 require_once(__DIR__ . '/../../config.php');
 
 global $DB;
@@ -32,11 +34,17 @@ $PAGE->requires->js_call_amd('local_message/confirm');
 $PAGE->requires->css('/local/news/styles.css');
 
 $category=$DB->get_records('local_news_categories',null,'id');
-
+$delid=optional_param('delid',null,PARAM_INT);
+$manager=new manager();
+if($delid){
+    $manager->delete_category($delid);
+    redirect($CFG->wwwroot.'/local/news/managecategory.php','You created a news with title '.$fromform->newstitle);
+}
 echo $OUTPUT->header();
 $templatecontext = (object)[
     'category' => array_values($category),
     'editurl' => new moodle_url('/local/news/addcategory.php'),
+    'delurl' => new moodle_url('/local/news/managecategory.php'),
 ];
 
 echo $OUTPUT->render_from_template('local_news/managecategory', $templatecontext);

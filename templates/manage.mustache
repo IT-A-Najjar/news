@@ -40,7 +40,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <input type="button" class="btn btn-primary" value="Edit news" onclick="location.href='{{editurl}}?newsid={{id}}'">
-                  <input type="button" class="local_messageid{{id}} btn btn-danger local_news_delete_button" value="Delete news">
+                    <input type="button" class="btn btn-danger" value="delete news" onclick="location.href='{{delurl}}?delid={{id}}'">
                 </div>
               </div>
             </div>
@@ -54,4 +54,4 @@
 <hr>
 <input type="button" class="btn btn-primary" value="Create news" onclick="location.href='{{editurl}}'">
 <input type="button" class="btn btn-primary" value="Create category" onclick="location.href='{{curl}}'">
-<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">
+<!--<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">-->

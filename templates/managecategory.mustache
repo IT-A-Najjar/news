@@ -41,7 +41,7 @@
 <!--                <td>{{categoryparent}}</td>-->
                 <td>
                     <input type="button" class="btn btn-primary" value="Edit category" onclick="location.href='{{editurl}}?categoryid={{id}}'">
-                    <input type="button" class="local_messageid{{id}} btn btn-danger local_message_delete_button" value="Delete category">
+                    <input type="button" class="btn btn-danger" value="delete news" onclick="location.href='{{delurl}}?delid={{id}}'">
                 </td>
             </tr>
         {{/category}}
@@ -50,4 +50,4 @@
 
 </div>
 <input type="button" class="btn btn-primary" value="Create category" onclick="location.href='{{editurl}}'">
-<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">
+<!--<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">-->

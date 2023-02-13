@@ -139,6 +139,15 @@ class manager {
         global $DB;
         return $DB->get_record('local_news', ['id' => $newsid]);
     }
+    /** Get all news from its id.
+     * @param int $newsid the message we're trying to get.
+     * @return object|false message data or false if not found.
+     */
+    public function get_all_news(): array
+    {
+        global $DB;
+        return $DB->get_records('local_news');
+    }
     /** Get a single message from its id.
      * @param int $newsid the message we're trying to get.
      * @return object|false message data or false if not found.
@@ -164,6 +173,18 @@ class manager {
         $object->newstext = $news_text;
         $object->categoryid = $news_type;
         return $DB->update_record('local_news', $object);
+    }
+    /** Update details for a single message.
+     * @param int $messageid the message we're trying to get.
+     * @param string $message_text the new text for the message.
+     * @param string $message_type the new type for the message.
+     * @return bool message data or false if not found.
+     */
+    public function update_newss(array $newsid ,$type): bool
+    {
+        global $DB;
+        list($ids, $params) = $DB->get_in_or_equal($newsid);
+        return $DB->set_field_select('local_news', 'categoryid', $type, "id $ids", $params);
     }
 //
     /** Update details for a single message.
@@ -201,11 +222,24 @@ class manager {
     {
         global $DB;
         $transaction = $DB->start_delegated_transaction();
-        $deletedNews = $DB->delete_records('local_message', ['id' => $newsid]);
-//        $deletedRead = $DB->delete_records('local_message_read', ['newsid' => $newsid]);
-//        if ($deletedMessage && $deletedRead) {
-//            $DB->commit_delegated_transaction($transaction);
-//        }
+        $deletedNews = $DB->delete_records('local_news', ['id' => $newsid]);
+
+        if ($deletedNews) {
+            $DB->commit_delegated_transaction($transaction);
+        }
+        return true;
+    }
+    /** Delete a category.
+     * @param $categoryid
+     * @return bool
+     * @throws \dml_transaction_exception
+     * @throws dml_exception
+     */
+    public function delete_category($categoryid)
+    {
+        global $DB;
+        $transaction = $DB->start_delegated_transaction();
+        $deletedNews = $DB->delete_records('local_news_categories', ['id' => $categoryid]);
         if ($deletedNews) {
             $DB->commit_delegated_transaction($transaction);
         }
@@ -220,10 +254,13 @@ class manager {
     {
         global $DB;
         $transaction = $DB->start_delegated_transaction();
-        list($ids, $params) = $DB->get_in_or_equal($newsids);
-        $deletedNews = $DB->delete_records_select('local_news', "id $ids", $params);
-        $deletedReads = $DB->delete_records_select('local_news_read', "newsid $ids", $params);
-        if ($deletedNews && $deletedReads) {
+        foreach ($newsids as $newsid){
+            $deletedNews=$DB->delete_records($newsid);
+        }
+//        list($ids, $params) = $DB->get_in_or_equal($newsids);
+//        $deletedNews = $DB->delete_records_select('local_news', "id $ids", $params);
+//        $deletedReads = $DB->delete_records_select('local_news_read', "newsid $ids", $params);
+        if ($deletedNews ) {
             $DB->commit_delegated_transaction($transaction);
         }
         return true;
