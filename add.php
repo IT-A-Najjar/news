@@ -40,11 +40,16 @@ if($mform->is_cancelled()){
 
     if ($fromform->id) {
         // We are updating an existing message.
-        $manager->update_news($fromform->id, $fromform->newstitle, $fromform->newstext,$fromform->newstype);
+        $manager->update_news($fromform->id, $fromform->newstitle, $fromform->newstext,$fromform->newstype,$mform->get_new_filename('image'));
         redirect($CFG->wwwroot . '/local/news/manage.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
     }
-
-    $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype,$mform->get_new_filename('image'));
+    $file = $mform->get_new_filename('image');
+    $fullpath = "upload/". time().$file;
+    $success = $mform->save_file('image', $fullpath, true);
+    if(!$success){
+        echo "Oops! something went wrong!";
+    }
+    $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype,$file);
 
         //go back to manage.php
     redirect($CFG->wwwroot.'/local/news/manage.php','You created a news with title '.$fromform->newstitle);

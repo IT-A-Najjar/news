@@ -29,6 +29,25 @@ use stdClass;
 
 class manager {
 
+
+    public function get_5_news(){
+        global $DB;
+
+        $sql='SELECT *
+                    FROM local_news
+                    ORDER BY id DESC
+                    LIMIT :id';
+//        $params = [
+//            'userid' => $id,
+//        ];
+        try {
+            return $DB->get_records_sql($sql);
+        } catch (dml_exception $e) {
+            // Log error here.
+            return $DB->get_records('local_news') ;
+        }
+    }
+
     /** Insert the data into our database table.
      * @param string $message_text
      * @param string $message_type
@@ -38,12 +57,12 @@ class manager {
     {
         $mform = new add();
 //
-//        $file = $newsform->get_new_filename('image');
+//        $file = $mform->get_new_filename('image');
         $fullpath = "upload/". time().$file;
-        $success = $mform->save_file('image', $fullpath,true);
-        if(!$success){
-            echo "Oops! something went wrong!";
-        }
+//        $success = $mform->save_file('image', $fullpath, true);
+//        if(!$success){
+//            echo "Oops! something went wrong!";
+//        }
 
         global $DB;
         $record_to_insert = new stdClass();
@@ -52,7 +71,6 @@ class manager {
         $record_to_insert->categoryid = $news_type;
         $record_to_insert->image = $fullpath;
         $record_to_insert->timecreated = time();
-//        $record_to_insert->newsphoto = $news_photo;
         try {
             return $DB->insert_record('local_news', $record_to_insert, false);
         } catch (dml_exception $e) {
@@ -79,10 +97,10 @@ class manager {
         }
     }
 
-    /** Gets all messages that have not been read by this user
-     * @param int $userid the user that we are getting messages for
-     * @return array of messages
-     */
+//    /** Gets all messages that have not been read by this user
+//     * @param int $userid the user that we are getting messages for
+//     * @return array of messages
+//     */
 //    public function get_news(int $userid): array
 //    {
 //        global $DB;
@@ -102,7 +120,7 @@ class manager {
 //            return [];
 //        }
 //    }
-//
+
     /** Gets all messages
      * @return array of messages
      */
@@ -164,27 +182,22 @@ class manager {
      * @param string $message_type the new type for the message.
      * @return bool message data or false if not found.
      */
-    public function update_news(int $newsid, string $news_title, string $news_text, string $news_type): bool
+    public function update_news(int $newsid, string $news_title, string $news_text, string $news_type,string $file): bool
     {
         global $DB;
+        $mform = new add();
+        $fullpath = "upload/". time().$file;
+        $success = $mform->save_file('image', $fullpath, true);
+        if(!$success){
+            echo "Oops! something went wrong!";
+        }
         $object = new stdClass();
         $object->id = $newsid;
         $object->newstitle = $news_title;
         $object->newstext = $news_text;
         $object->categoryid = $news_type;
+        $object->image = $fullpath;
         return $DB->update_record('local_news', $object);
-    }
-    /** Update details for a single message.
-     * @param int $messageid the message we're trying to get.
-     * @param string $message_text the new text for the message.
-     * @param string $message_type the new type for the message.
-     * @return bool message data or false if not found.
-     */
-    public function update_newss(array $newsid ,$type): bool
-    {
-        global $DB;
-        list($ids, $params) = $DB->get_in_or_equal($newsid);
-        return $DB->set_field_select('local_news', 'categoryid', $type, "id $ids", $params);
     }
 //
     /** Update details for a single message.
@@ -202,16 +215,6 @@ class manager {
         $object->timecreated = time();
         return $DB->update_record('local_news_categories', $object);
     }
-//    /** Update the type for an array of messages.
-//     * @return bool message data or false if not found.
-//     */
-//    public function update_messages(array $messageids, $type): bool
-//    {
-//        global $DB;
-//        list($ids, $params) = $DB->get_in_or_equal($messageids);
-//        return $DB->set_field_select('local_message', 'messagetype', $type, "id $ids", $params);
-//    }
-//
     /** Delete a message and all the read history.
      * @param $newsid
      * @return bool
@@ -245,24 +248,5 @@ class manager {
         }
         return true;
     }
-//
-    /** Delete all messages by id.
-     * @param $messageids
-     * @return bool
-     */
-    public function delete_newss($newsids)
-    {
-        global $DB;
-        $transaction = $DB->start_delegated_transaction();
-        foreach ($newsids as $newsid){
-            $deletedNews=$DB->delete_records($newsid);
-        }
-//        list($ids, $params) = $DB->get_in_or_equal($newsids);
-//        $deletedNews = $DB->delete_records_select('local_news', "id $ids", $params);
-//        $deletedReads = $DB->delete_records_select('local_news_read', "newsid $ids", $params);
-        if ($deletedNews ) {
-            $DB->commit_delegated_transaction($transaction);
-        }
-        return true;
-    }
 }
+

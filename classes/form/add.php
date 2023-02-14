@@ -27,7 +27,7 @@ use local_news\manager;
 use moodleform;
 
 require_once("$CFG->libdir/formslib.php");
-
+defined('MOODLE_INTERNAL') || die;
 class add extends moodleform {
     //Add elements to form
     public function definition() {
@@ -37,7 +37,7 @@ class add extends moodleform {
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
-        $mform->addElement('text', 'newstitle', '<h3>News Title</h3>'); // Add elements to your form
+        $mform->addElement('text', 'newstitle', '<h3>'.get_string('newstitle','local_newss').'</h3>'); // Add elements to your form
         $mform->setType('newstitle', PARAM_NOTAGS);  //Set type of element
         $mform->addRule('newstitle', 'Mandatory', 'required', null, 'client');
         $mform->setDefault('newstitle', "Enter the Title");        //Default value
@@ -61,10 +61,12 @@ class add extends moodleform {
 
         $userpicoptions = array('subdirs' => 0, 'maxbytes' => '', 'context' => $context,
             'accepted_types' => array('.png', '.jpeg'));
-        $mform->addElement('filemanager', 'image', '<h3>News Image</h3>', null /*,$userpicoptions*/);
-        $mform->addRule('image', get_string('required', 'local_slack'), 'required', null, 'client');
-        $mform->setType('image', PARAM_RAW);
-        $mform->addHelpButton('image', 'image', 'local_news');
+//        $mform->addElement('filemanager', 'image', '<h3>News Image</h3>', null /*,$userpicoptions*/);
+        $mform->addElement('filepicker', 'image', '<h3>News Image</h3>', null,
+            array('maxbytes' => 11111111111111, 'accepted_types' => '*'));
+//        $mform->addRule('image', get_string('required', 'local_slack'), 'required', null, 'client');
+//        $mform->setType('image', PARAM_RAW);
+//        $mform->addHelpButton('image', 'image', 'local_news');
 
         $this->add_action_buttons();
     }
