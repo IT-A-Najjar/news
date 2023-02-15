@@ -30,16 +30,13 @@ use stdClass;
 class manager {
 
 
-    public function get_5_news(){
+    public function get_num_news($userid){
         global $DB;
 
         $sql='SELECT *
                     FROM local_news
                     ORDER BY id DESC
                     LIMIT :id';
-//        $params = [
-//            'userid' => $id,
-//        ];
         try {
             return $DB->get_records_sql($sql);
         } catch (dml_exception $e) {
@@ -55,14 +52,7 @@ class manager {
      */
     public function create_news(string $news_title, string $news_text, string $news_type ,string $file): bool
     {
-        $mform = new add();
-//
-//        $file = $mform->get_new_filename('image');
         $fullpath = "upload/". time().$file;
-//        $success = $mform->save_file('image', $fullpath, true);
-//        if(!$success){
-//            echo "Oops! something went wrong!";
-//        }
 
         global $DB;
         $record_to_insert = new stdClass();
@@ -89,7 +79,6 @@ class manager {
         $record_to_insert = new stdClass();
         $record_to_insert->categoryname = $category_name;
         $record_to_insert->timecreated = time();
-//        $record_to_insert->categoryparent = $category_parent;
         try {
             return $DB->insert_record('local_news_categories', $record_to_insert, false);
         } catch (dml_exception $e) {
