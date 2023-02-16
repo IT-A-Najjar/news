@@ -26,13 +26,6 @@
 
 <div class="px-4 py-5 my-5 text-center">
     <h1 class="m-4">Table News</h1>
-<!--    <select class="form-select my-3" aria-label="Default select example">-->
-<!--        <option selected>Choose Category</option>-->
-<!--        {{#category}}-->
-<!--        <option value="{{id}}">{{categoryname}}</option>-->
-<!--        {{/category}}-->
-<!--    </select>-->
-<!--    <input type="button" class="btn btn-primary" value="Edit news" onclick="location.href='{{filter}}?id='">-->
     <form action="{{filter}}" >
         <div class="mt-4">
             <select name="filter" class="filter_center" aria-label="Default select example">
@@ -44,12 +37,11 @@
                 {{/category}}
             </select>
         </div>
-            <div class=" filter_center flex items-center justify-end mt-4">
-                <button class="btn btn-primary " >submit</button>
-            </div>
-
+        <div class=" filter_center flex items-center justify-end mt-4">
+            <button class="btn btn-primary " >submit</button>
+        </div>
     </form>
-    <table class="table table-dark table-striped">
+    <table class="table table-dark table-striped container">
         <thead>
         <tr>
             <th scope="col">ID</th>
@@ -58,6 +50,7 @@
             <th scope="col">Category</th>
             <th scope="col">Image</th>
             <th scope="col">Time</th>
+            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -67,7 +60,7 @@
                 <td>{{newstitle}}</td>
                 <td>{{newstext}}</td>
                 <td>{{categoryid}}</td>
-                <td>{{image}}</td>
+                <td><img class="w-50 container" src="/../moodle/local/news/{{image}}"></td>
                 <td>{{timecreated}}</td>
                 <td>
                     <input type="button" class="btn btn-primary" value="Edit news" onclick="location.href='{{editurl}}?newsid={{id}}'">

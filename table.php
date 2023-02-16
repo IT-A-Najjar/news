@@ -20,6 +20,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use local_news\manager;
+
 require_once(__DIR__ . '/../../config.php');
 require_login();
 $PAGE->set_url(new moodle_url('/local/news/table.php'));
@@ -27,14 +29,10 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title('TABLE NEWS');
 
 global $DB;
+$manage=new manager();
 $filterid=optional_param('filter',null,PARAM_INT);
 if($filterid){
-    $sql='SELECT id,newstitle,newstext,categoryid,image,timecreated FROM local_news
-            WHERE categoryid=:filter';
-    $params=[
-        'filter'=>$filterid,
-        ];
-    $news=$DB->get_records_sql($sql,$params);
+    $news=$manage->get_news_filter($filterid);
 }else {
     $news = $DB->get_records('local_news');
 }

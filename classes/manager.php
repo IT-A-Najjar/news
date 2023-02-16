@@ -30,15 +30,33 @@ use stdClass;
 class manager {
 
 
-    public function get_num_news($userid){
+    public function get_num_news($userid=null){
         global $DB;
 
-        $sql='SELECT *
-                    FROM local_news
-                    ORDER BY id DESC
-                    LIMIT :id';
+        $sql = "SELECT ln.id, ln.newstitle, ln.newstext, ln.image
+            FROM {local_news} ln
+            LEFT OUTER JOIN {local_news_categories} lnc ON lnc.id = ln.categoryid
+            ORDER BY id DESC
+            LIMIT 5";
         try {
             return $DB->get_records_sql($sql);
+        } catch (dml_exception $e) {
+            // Log error here.
+            return $DB->get_records('local_news') ;
+        }
+    }
+
+    public function get_news_filter($filter){
+        global $DB;
+        $sql='SELECT ln.id, ln.newstitle, ln.newstext, ln.image, ln.categoryid, ln.timecreated
+            FROM {local_news} ln
+            LEFT OUTER JOIN {local_news_categories} lnc ON lnc.id = ln.categoryid
+            WHERE ln.categoryid = :filterid';
+        $params=[
+            'filterid'=>$filter
+        ];
+        try {
+            return $DB->get_records_sql($sql,$params);
         } catch (dml_exception $e) {
             // Log error here.
             return $DB->get_records('local_news') ;
