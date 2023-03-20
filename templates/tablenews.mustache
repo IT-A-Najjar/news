@@ -1,0 +1,75 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_news/manage
+
+
+    Example context (json):
+    {
+
+    }
+}}
+
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="m-4">Table News</h1>
+    <form action="{{filter}}" >
+        <div class="mt-4">
+            <select name="filter" class="filter_center" aria-label="Default select example">
+                <option selected value=0 >Choose Category</option>
+                {{#category}}
+                <option value="{{id}}">
+                {{categoryname}}
+                </option>
+                {{/category}}
+            </select>
+        </div>
+        <div class=" filter_center flex items-center justify-end mt-4">
+            <button class="btn btn-primary " >submit</button>
+        </div>
+    </form>
+    <table class="table table-dark table-striped container">
+        <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Title</th>
+            <th scope="col">Text</th>
+            <th scope="col">Category</th>
+            <th scope="col">Image</th>
+            <th scope="col">Time</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#news}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <td>{{newstitle}}</td>
+                <td>{{newstext}}</td>
+                <td>{{categoryid}}</td>
+                <td><img class="w-50 container" src="/../moodle/local/news/{{image}}"></td>
+                <td>{{timecreated}}</td>
+                <td>
+                    <input type="button" class="btn btn-primary" value="Edit news" onclick="location.href='{{editurl}}?newsid={{id}}'">
+                    <input type="button" class="btn btn-danger" value="delete news" onclick="location.href='{{delurl}}?delid={{id}}'">
+                </td>
+            </tr>
+        {{/news}}
+        </tbody>
+    </table>
+
+</div>
+<input type="button" class="btn btn-primary" value="Cuncel" onclick="location.href='{{backurl}}'">

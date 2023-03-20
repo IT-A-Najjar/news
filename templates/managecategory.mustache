@@ -1,0 +1,52 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_news/manage
+
+
+    Example context (json):
+    {
+
+    }
+}}
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="m-4">Category</h1>
+    <table class="table table-dark table-striped">
+        <thead>
+        <tr>
+            <th scope="col">num</th>
+            <th scope="col">name</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#category}}
+            <tr>
+                <th scope="row">{{id}}</th>
+                <td>{{categoryname}}</td>
+<!--                <td>{{categoryparent}}</td>-->
+                <td>
+                    <input type="button" class="btn btn-primary" value="Edit category" onclick="location.href='{{editurl}}?categoryid={{id}}'">
+                    <input type="button" class="btn btn-danger" value="delete news" onclick="location.href='{{delurl}}?delid={{id}}'">
+                </td>
+            </tr>
+        {{/category}}
+        </tbody>
+    </table>
+
+</div>
+<input type="button" class="btn btn-primary" value="Create category" onclick="location.href='{{editurl}}'">
+<!--<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">-->

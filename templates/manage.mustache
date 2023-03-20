@@ -1,0 +1,58 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_news/manage
+
+
+    Example context (json):
+    {
+
+    }
+}}
+<h1 class="aa">List of News</h1>
+
+
+<div class="album py-5 bg-light">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      {{#news}}
+        <div class="col">
+          <div class="card shadow-sm">
+<!--            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>-->
+              <img src="{{image}}">
+              <div class="card-body">
+              <h5 class="card-title">{{newstitle}}</h5>
+              <p class="card-text">{{newstext}}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <input type="button" class="btn btn-primary" value="Edit news" onclick="location.href='{{editurl}}?newsid={{id}}'">
+                  <input type="button" class="btn btn-danger" value="delete news" onclick="location.href='{{delurl}}?delid={{id}}'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{/news}}
+      </div>
+    </div>
+ </div>
+
+<hr>
+<input type="button" class="btn btn-primary" value="Create news" onclick="location.href='{{editurl}}'">
+<input type="button" class="btn btn-primary" value="Create category" onclick="location.href='{{curl}}'">
+<!--<input type="button" class="btn btn-secondary" value="Bulk edit news" onclick="location.href='{{bulkediturl}}'">-->
