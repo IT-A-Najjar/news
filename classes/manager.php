@@ -80,19 +80,20 @@ class manager {
 
     public  function get_report_news(){
         global $DB;
-        $sql = "SELECT DISTINCT * from {local_news}
-                WHERE id NOT IN(SELECT DISTINCT newsid from {local_news_read}
-                WHERE userid = :userid)
-                ORDER BY id DESC
-                LIMIT 5";
-        $params = [
-            'userid' => $userid,
-        ];
+        $sql = "SELECT {local_news}.*,
+                    COUNT({local_news_read}.userid) AS read_count 
+                    FROM {local_news}
+                    LEFT JOIN {local_news_read} ON {local_news}.id = {local_news_read}.newsid 
+                    GROUP BY {local_news}.id 
+                    ORDER BY read_count DESC";
+//        $params = [
+//            'userid' => $userid,
+//        ];
         try {
-            return $DB->get_records_sql($sql,$params);
+            return $DB->get_records_sql($sql);
         } catch (dml_exception $e) {
             // Log error here.
-            return 0;
+            return 1;
         }
     }
     /** Insert the data into our database table.

@@ -14,33 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
-{{!
-    @template local_news/manage
-
-
-    Example context (json):
-    {
-
-    }
-}}
-
 <div class="px-4 py-5 my-5 text-center">
     <h1 class="m-4">Report News</h1>
-<!--    <form action="{{filter}}" >-->
-<!--        <div class="mt-4">-->
-<!--            <select name="filter" class="filter_center" aria-label="Default select example">-->
-<!--                <option selected value=0 >Choose Category</option>-->
-<!--                {{#category}}-->
-<!--                <option value="{{id}}">-->
-<!--                {{categoryname}}-->
-<!--                </option>-->
-<!--                {{/category}}-->
-<!--            </select>-->
-<!--        </div>-->
-<!--        <div class=" filter_center flex items-center justify-end mt-4">-->
-<!--            <button class="btn btn-primary " >submit</button>-->
-<!--        </div>-->
-<!--    </form>-->
     <table class="table table-dark table-striped container">
         <thead>
         <tr>
@@ -57,8 +32,8 @@
         <tbody>
         {{#news}}
             <tr>
+                <th scope="row">{{read_count}}</th>
                 <td>{{id}}</td>
-                <th scope="row">{{id}}</th>
                 <td>{{newstitle}}</td>
                 <td>{{newstext}}</td>
                 <td>{{categoryid}}</td>
