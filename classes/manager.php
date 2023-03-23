@@ -264,9 +264,18 @@ class manager {
     public function delete_news($newsid)
     {
         global $DB;
+        $news=$DB->get_record('local_news', ['id' => $newsid]);
+        $filename = $news->image; // تعيين المسار الكامل للملف المراد حذفه
+
         $transaction = $DB->start_delegated_transaction();
         $deletedNews = $DB->delete_records('local_news', ['id' => $newsid]);
 
+        if (file_exists($filename)) { // التأكد من وجود الملف
+            unlink($filename); // حذف الملف
+            echo 'تم حذف الملف بنجاح';
+        } else {
+            echo 'لم يتم العثور على الملف';
+        }
         if ($deletedNews) {
             $DB->commit_delegated_transaction($transaction);
         }
