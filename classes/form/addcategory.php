@@ -38,20 +38,11 @@ class addcategory extends moodleform
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
-        $mform->addElement('text', 'categoryname', '<h3>Category Name</h3>'); // Add elements to your form
+        $mform->addElement('text', 'categoryname', '<h3>'.get_string('namecategory','local_news').'</h3>'); // Add elements to your form
         $mform->setType('categoryname', PARAM_NOTAGS);  //Set type of element
         $mform->addRule('categoryname', 'Mandatory', 'required', null, 'client');
-        $mform->setDefault('categoryname', "Enter the Category Name");        //Default value
+        $mform->setDefault('categoryname', get_string('entername','local_news'));        //Default value
 
-
-//        $choices = array();
-//        $choices['0'] = "عاجل";
-//        $choices['1'] = "هام";
-//        $choices['2'] = "متوسط";
-//        $choices['3'] = "غير مهم";
-//        $mform->addElement('select', 'categoryparent','<h3>Category Parent</h3>',$choices );
-//        $mform->addRule('categoryparent', 'Mandatory', 'required', null, 'client');
-//        $mform->setDefault('categoryparent', '3');
 
         $this->add_action_buttons();
     }

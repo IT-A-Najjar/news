@@ -29,12 +29,12 @@ require_login();
 
 $PAGE->set_url(new moodle_url('/local/news/addcategory.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Add new Category');
+$PAGE->set_title(get_string('addcategory','local_news'));
 
 $categoryid=optional_param('categoryid',null,PARAM_INT);
 $mform = new addcategory();
 if($mform->is_cancelled()){
-    redirect($CFG->wwwroot.'/local/news/managecategory.php',get_string('cancelled_form','local_news'));
+    redirect($CFG->wwwroot.'/local/news/managecategory.php',get_string('cancelled_form_category','local_news'));
 
 }elseif ($fromform= $mform->get_data()){
     $manager = new manager();
@@ -42,13 +42,13 @@ if($mform->is_cancelled()){
     if ($fromform->id) {
         // We are updating an existing message.
         $manager->update_category($fromform->id,$fromform->categoryname);
-        redirect($CFG->wwwroot . '/local/news/managecategory.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
+        redirect($CFG->wwwroot . '/local/news/managecategory.php', get_string('updated_form_category', 'local_message') . $fromform->categoryname);
     }
 
     $manager->create_category($fromform->categoryname);
 
     //go back to manage.php
-    redirect($CFG->wwwroot.'/local/news/managecategory.php','You created a new category  '.$fromform->categoryname);
+    redirect($CFG->wwwroot.'/local/news/managecategory.php',get_string('created_form_category','local_news') . $fromform->categoryname);
 }
 if($categoryid){
     global $DB;
@@ -61,6 +61,6 @@ if($categoryid){
 }
 
 echo $OUTPUT->header();
-echo '<h1 class="aa">ADD NEW SCATEGORY</h1>';
+echo '<h1 class="aa">'.get_string('addcategory','local_news').'</h1>';
 $mform->display();
 echo $OUTPUT->footer();

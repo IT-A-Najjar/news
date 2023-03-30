@@ -23,13 +23,13 @@
 use local_news\manager;
 
 require_once(__DIR__ . '/../../config.php');
-
+require_login();
 global $DB;
 
 $PAGE->set_url(new moodle_url('/local/news/managecategory.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Category');
-$PAGE->set_heading('Manage Category');
+$PAGE->set_title(get_string('title_manage_category','local_news'));
+$PAGE->set_heading(get_string('heading_manage_category','local_news'));
 $PAGE->requires->js_call_amd('local_message/confirm');
 $PAGE->requires->css('/local/news/styles.css');
 
@@ -38,7 +38,7 @@ $delid=optional_param('delid',null,PARAM_INT);
 $manager=new manager();
 if($delid){
     $manager->delete_category($delid);
-    redirect($CFG->wwwroot.'/local/news/managecategory.php','You created a news with title '.$fromform->newstitle);
+    redirect($CFG->wwwroot.'/local/news/managecategory.php',get_string('created_form_category','local_news').$fromform->newstitle);
 }
 echo $OUTPUT->header();
 $templatecontext = (object)[

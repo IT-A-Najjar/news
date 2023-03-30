@@ -16,14 +16,13 @@
 
 
 /**
- * @package     local_message
+ * @package     local_news
  * @author      Kristian
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace local_news\form;
-use core_files\reportbuilder\local\entities\file;
-use local_news\manager;
+
 use moodleform;
 
 require_once("$CFG->libdir/formslib.php");
@@ -40,7 +39,7 @@ class add extends moodleform {
         $mform->addElement('text', 'newstitle', '<h3>'.get_string('newstitle','local_news').'</h3>'); // Add elements to your form
         $mform->setType('newstitle', PARAM_NOTAGS);  //Set type of element
         $mform->addRule('newstitle', 'Mandatory', 'required', null, 'client');
-        $mform->setDefault('newstitle', "Enter the Title");        //Default value
+        $mform->setDefault('newstitle', get_string('entertitle','local_news'));        //Default value
 
         $records=$DB->get_records('local_news_categories');
         $categories=array();
@@ -50,23 +49,18 @@ class add extends moodleform {
         }
         $mform->addElement('select', 'newstype','<h3>'.get_string('newstype','local_news').'</h3>',$categories);
         $mform->addRule('newstype', 'Mandatory', 'required', null, 'client');
-        $mform->setDefault('newstype', '3');
+        $mform->setDefault('newstype', '1');
 
 
         $mform->addElement('textarea', 'newstext', '<h3>'.get_string('content','local_news').'</h3>', 'wrap="virtual" rows="5" cols="5"', array('maxlength' => '700'));
         $mform->setType('newstext', PARAM_RAW);
         $mform->addRule('newstext', get_string('required', 'local_news'), 'required', null, 'client');
-//       $mform->addHelpButton('newstext', 'introexp', 'local_news');
-        $mform->setDefault('newstext', "Enter the News");
+        $mform->setDefault('newstext', get_string('entercontent','local_news'));
 
         $userpicoptions = array('subdirs' => 0, 'maxbytes' => '', 'context' => $context,
             'accepted_types' => array('.png', '.jpeg'));
-//        $mform->addElement('filemanager', 'image', '<h3>News Image</h3>', null /*,$userpicoptions*/);
-        $mform->addElement('filepicker', 'image', '<h3>News Image</h3>', null,
+        $mform->addElement('filepicker', 'image', '<h3>'.get_string('newsimage','local_news').'</h3>', null,
             array('maxbytes' => 11111111111111, 'accepted_types' => '*'));
-//        $mform->addRule('image', get_string('required', 'local_slack'), 'required', null, 'client');
-//        $mform->setType('image', PARAM_RAW);
-//        $mform->addHelpButton('image', 'image', 'local_news');
 
         $this->add_action_buttons();
     }

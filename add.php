@@ -27,11 +27,12 @@ require_login();
 
 $PAGE->set_url(new moodle_url('/local/news/add.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('Add new News');
+$PAGE->set_title(get_string('addnews','local_news'));
 $PAGE->requires->css('/local/news/styles.css');
 $newsid=optional_param('newsid',null,PARAM_INT);
 
 $mform=new add();
+
 if($mform->is_cancelled()){
     redirect($CFG->wwwroot.'/local/news/manage.php',get_string('cancelled_form','local_news'));
 
@@ -41,7 +42,7 @@ if($mform->is_cancelled()){
     if ($fromform->id) {
         // We are updating an existing message.
         $manager->update_news($fromform->id, $fromform->newstitle, $fromform->newstext,$fromform->newstype,$mform->get_new_filename('image'));
-        redirect($CFG->wwwroot . '/local/news/manage.php', get_string('updated_form', 'local_message') . $fromform->messagetest);
+        redirect($CFG->wwwroot . '/local/news/manage.php', get_string('updated_form', 'local_news') . $fromform->messagetest);
     }
     $file = $mform->get_new_filename('image');
     $fullpath = "upload/". time().$file;
@@ -52,7 +53,7 @@ if($mform->is_cancelled()){
     $manager->create_news($fromform->newstitle,$fromform->newstext,$fromform->newstype,$file);
 
         //go back to manage.php
-    redirect($CFG->wwwroot.'/local/news/manage.php','You created a news with title '.$fromform->newstitle);
+    redirect($CFG->wwwroot.'/local/news/manage.php',get_string('updated_form', 'local_news') . $fromform->newstitle);
 }
 
 if($newsid){
@@ -66,6 +67,6 @@ if($newsid){
 }
 
 echo $OUTPUT->header();
-echo '<h1 class="aa">ADD NEW NEWS</h1>';
+echo '<h1 class="aa">'.get_string('addnews','local_news').'</h1>';
 $mform->display();
 echo $OUTPUT->footer();

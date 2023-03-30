@@ -26,7 +26,8 @@ require_once(__DIR__ . '/../../config.php');
 require_login();
 $PAGE->set_url(new moodle_url('/local/news/table.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title('TABLE NEWS');
+$PAGE->set_title(get_string('title_news_table','local_news'));
+$PAGE->set_heading(get_string('heading_news_table','local_news'));
 
 global $DB;
 $manage=new manager();
