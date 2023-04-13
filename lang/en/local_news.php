@@ -16,6 +16,7 @@
 */
 
 $string['pluginname'] = 'Broadcast News';
+$string['news:managenews']='Manage News';
 //class add news
 $string['newstitle'] = 'News Title';
 $string['newstype'] = 'News Classification';

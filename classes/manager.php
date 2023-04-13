@@ -24,13 +24,17 @@
 namespace local_news;
 
 use dml_exception;
+use local_news\event\event_news;
+use local_news\event\event_category;
 use local_news\form\add;
 use stdClass;
 
-class manager {
+class manager
+{
 
 
-    public function get_num_news($userid=null){
+    public function get_num_news($userid = null)
+    {
         global $DB;
         $sql = "SELECT DISTINCT * from {local_news}
                 WHERE id NOT IN(SELECT DISTINCT newsid from {local_news_read}
@@ -41,36 +45,50 @@ class manager {
             'userid' => $userid,
         ];
         try {
-            return $DB->get_records_sql($sql,$params);
+            return $DB->get_records_sql($sql, $params);
         } catch (dml_exception $e) {
             // Log error here.
             return 0;
         }
     }
 
-    public function get_news_filter($filter){
+    public function get_news_filter($filter)
+    {
         global $DB;
-        $sql='SELECT ln.id, ln.newstitle, ln.newstext, ln.image, ln.categoryid, ln.timecreated
+        $sql = 'SELECT ln.id, ln.newstitle, ln.newstext, ln.image, ln.categoryid, ln.timecreated
             FROM {local_news} ln
             LEFT OUTER JOIN {local_news_categories} lnc ON lnc.id = ln.categoryid
             WHERE ln.categoryid = :filterid';
-        $params=[
-            'filterid'=>$filter
+        $params = [
+            'filterid' => $filter
         ];
         try {
-            return $DB->get_records_sql($sql,$params);
+            return $DB->get_records_sql($sql, $params);
         } catch (dml_exception $e) {
             // Log error here.
-            return $DB->get_records('local_news') ;
+            return $DB->get_records('local_news');
         }
     }
 
-    public function read_news(int $id_news,int $id_user){
+    public function read_news(int $id_news, int $id_user)
+    {
         global $DB;
         $record_to_insert = new stdClass();
         $record_to_insert->newsid = $id_news;
         $record_to_insert->userid = $id_user;
         $record_to_insert->timeread = time();
+        $context = \context_system::instance();
+        event_news::create([
+
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " has view News  with id .$id_news. "
+
+
+            ]
+
+        ])->trigger();
         try {
             return $DB->insert_record('local_news_read', $record_to_insert, false);
         } catch (dml_exception $e) {
@@ -78,7 +96,8 @@ class manager {
         }
     }
 
-    public  function get_report_news(){
+    public  function get_report_news()
+    {
         global $DB;
         $sql = "SELECT {local_news}.*,
                     COUNT({local_news_read}.userid) AS read_count 
@@ -86,9 +105,7 @@ class manager {
                     LEFT JOIN {local_news_read} ON {local_news}.id = {local_news_read}.newsid 
                     GROUP BY {local_news}.id 
                     ORDER BY read_count DESC";
-//        $params = [
-//            'userid' => $userid,
-//        ];
+
         try {
             return $DB->get_records_sql($sql);
         } catch (dml_exception $e) {
@@ -101,17 +118,29 @@ class manager {
      * @param string $message_type
      * @return bool true if successful
      */
-    public function create_news(string $news_title, string $news_text, string $news_type ,string $file): bool
+    public function create_news(string $news_title, string $news_text, string $news_type, string $file): bool
     {
-        $fullpath = "upload/". time().$file;
 
-        global $DB;
+        $fullpath = "upload/" . time() . $file;
+
+        global $DB, $USER;
+        $context = \context_system::instance();
         $record_to_insert = new stdClass();
         $record_to_insert->newstitle = $news_title;
         $record_to_insert->newstext = $news_text;
         $record_to_insert->categoryid = $news_type;
         $record_to_insert->image = $fullpath;
         $record_to_insert->timecreated = time();
+        event_news::create([
+
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " has create new news  with.$news_type. "
+
+
+            ]
+        ])->trigger();
         try {
             return $DB->insert_record('local_news', $record_to_insert, false);
         } catch (dml_exception $e) {
@@ -130,6 +159,14 @@ class manager {
         $record_to_insert = new stdClass();
         $record_to_insert->categoryname = $category_name;
         $record_to_insert->timecreated = time();
+        $context = \context_system::instance();
+        \local_news\event\event_category::create([
+
+            'context' => $context,
+            'other' => [
+                'decs' => " create category name.$category_name."
+            ]
+        ])->trigger();
         try {
             return $DB->insert_record('local_news_categories', $record_to_insert, false);
         } catch (dml_exception $e) {
@@ -137,57 +174,24 @@ class manager {
         }
     }
 
-//    /** Gets all messages that have not been read by this user
-//     * @param int $userid the user that we are getting messages for
-//     * @return array of messages
-//     */
-//    public function get_news(int $userid): array
-//    {
-//        global $DB;
-////        $sql = "SELECT lm.id, lm.messagetest, lm.messagetype
-////            FROM {local_message} lm
-////            LEFT OUTER JOIN {local_message_read} lmr ON lm.id = lmr.messageid AND lmr.userid = :userid
-////            WHERE lmr.userid IS NULL";
-//        $sql="SELECT newstitle, newstext FROM local_news
-//                WHERE id=:userid";
-//        $params = [
-//            'userid' => $userid,
-//        ];
-//        try {
-//            return $DB->get_records_sql($sql, $params);
-//        } catch (dml_exception $e) {
-//            // Log error here.
-//            return [];
-//        }
-//    }
-
     /** Gets all messages
      * @return array of messages
      */
-    public function get_all_categorys(): array {
+    public function get_all_categorys(): array
+    {
         global $DB;
+        $context = \context_system::instance();
+        event_category::create([
+
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " has viewed  the list Category. "
+            ]
+        ])->trigger();
         return $DB->get_records('local_news_categories');
     }
-//
-//    /** Mark that a message was read by this user.
-//     * @param int $message_id the message to mark as read
-//     * @param int $userid the user that we are marking message read
-//     * @return bool true if successful
-//     */
-//    public function mark_message_read(int $message_id, int $userid): bool
-//    {
-//        global $DB;
-//        $read_record = new stdClass();
-//        $read_record->messageid = $message_id;
-//        $read_record->userid = $userid;
-//        $read_record->timeread = time();
-//        try {
-//            return $DB->insert_record('local_message_read', $read_record, false);
-//        } catch (dml_exception $e) {
-//            return false;
-//        }
-//    }
-//
+
     /** Get a single message from its id.
      * @param int $newsid the message we're trying to get.
      * @return object|false message data or false if not found.
@@ -215,20 +219,20 @@ class manager {
         global $DB;
         return $DB->get_record('local_news_categories', ['id' => $id]);
     }
-//
+    //
     /** Update details for a single message.
      * @param int $messageid the message we're trying to get.
      * @param string $message_text the new text for the message.
      * @param string $message_type the new type for the message.
      * @return bool message data or false if not found.
      */
-    public function update_news(int $newsid, string $news_title, string $news_text, string $news_type,string $file): bool
+    public function update_news(int $newsid, string $news_title, string $news_text, string $news_type, string $file): bool
     {
         global $DB;
         $mform = new add();
-        $fullpath = "upload/". time().$file;
+        $fullpath = "upload/" . time() . $file;
         $success = $mform->save_file('image', $fullpath, true);
-        if(!$success){
+        if (!$success) {
             echo "Oops! something went wrong!";
         }
         $object = new stdClass();
@@ -237,9 +241,18 @@ class manager {
         $object->newstext = $news_text;
         $object->categoryid = $news_type;
         $object->image = $fullpath;
+        $context = \context_system::instance();
+        event_news::create([
+
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " has update new news  with id.$newsid. "
+            ]
+        ])->trigger();
         return $DB->update_record('local_news', $object);
     }
-//
+    //
     /** Update details for a single message.
      * @param int $messageid the message we're trying to get.
      * @param string $message_text the new text for the message.
@@ -253,6 +266,14 @@ class manager {
         $object->id = $categoryid;
         $object->categoryname = $categoryname;
         $object->timecreated = time();
+        $context = \context_system::instance();
+        event_category::create([
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " has update category  with.$categoryid. "
+            ]
+        ])->trigger();
         return $DB->update_record('local_news_categories', $object);
     }
     /** Delete a message and all the read history.
@@ -264,12 +285,19 @@ class manager {
     public function delete_news($newsid)
     {
         global $DB;
-        $news=$DB->get_record('local_news', ['id' => $newsid]);
+        $news = $DB->get_record('local_news', ['id' => $newsid]);
         $filename = $news->image; // تعيين المسار الكامل للملف المراد حذفه
 
         $transaction = $DB->start_delegated_transaction();
         $deletedNews = $DB->delete_records('local_news', ['id' => $newsid]);
-
+        $context = \context_system::instance();
+        event_news::create([
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " delete news with id .$newsid.",
+            ]
+        ])->trigger();
         if (file_exists($filename)) { // التأكد من وجود الملف
             unlink($filename); // حذف الملف
             echo 'تم حذف الملف بنجاح';
@@ -295,7 +323,14 @@ class manager {
         if ($deletedNews) {
             $DB->commit_delegated_transaction($transaction);
         }
+        $context = \context_system::instance();
+        event_category::create([
+            'context' => $context,
+            'other' =>
+            [
+                'decs' => " has delete category  with.$categoryid. "
+            ]
+        ])->trigger();
         return true;
     }
 }
-

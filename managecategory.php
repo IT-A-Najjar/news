@@ -24,6 +24,9 @@ use local_news\manager;
 
 require_once(__DIR__ . '/../../config.php');
 require_login();
+$context = context_system::instance();
+require_capability('local/news:managenews',$context);
+
 global $DB;
 
 $PAGE->set_url(new moodle_url('/local/news/managecategory.php'));
